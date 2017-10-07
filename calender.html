@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {box-sizing: border-box;}
+            ul {list-style-type: none;}
+            body {font-family: Verdana, sans-serif;}
+
+            .month {
+                padding: 70px 25px;
+                width: 100%;
+                background: #1abc9c;
+                text-align: center;
+            }
+
+            .month ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            .month ul li {
+                color: white;
+                font-size: 20px;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+            }
+
+            .month .prev {
+                float: left;
+                padding-top: 10px;
+                cursor: pointer;
+            }
+
+            .month .next {
+                float: right;
+                padding-top: 10px;
+                cursor: pointer;
+            }
+
+            .weekdays {
+                margin: 0;
+                padding: 10px 0;
+                background-color: #ddd;
+            }
+
+            .weekdays li {
+                display: inline-block;
+                width: 13.6%;
+                color: #666;
+                text-align: center;
+            }
+
+            .days {
+                padding: 10px 0;
+                background: #eee;
+                margin: 0;
+            }
+
+            .days li {
+                list-style-type: none;
+                display: inline-block;
+                width: 13.6%;
+                text-align: center;
+                margin-bottom: 5px;
+                font-size:12px;
+                color: #777;
+            }
+
+            .days li .active {
+                padding: 5px;
+                background: #1abc9c;
+                color: white !important
+            }
+
+
+
+            /* Add media queries for smaller screens */
+            @media screen and (max-width:720px) {
+                .weekdays li, .days li {width: 13.1%;}
+            }
+
+            @media screen and (max-width: 420px) {
+                .weekdays li, .days li {width: 12.5%;}
+                .days li .active {padding: 2px;}
+            }
+
+            @media screen and (max-width: 290px) {
+                .weekdays li, .days li {width: 12.2%;}
+            }
+        </style>
+
+        <style>
+            /* The Modal (background) */
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place */
+                z-index: 1; /* Sit on top */
+                padding-top: 100px; /* Location of the box */
+                left: 0;
+                top: 0;
+                width: 100%; /* Full width */
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: rgb(0,0,0); /* Fallback color */
+                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+
+            /* Modal Content */
+            .modal-content {
+                background-color: #fefefe;
+                margin: auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+            }
+
+            /* The Close Button */
+            .close {
+                color: #aaaaaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <label hidden id="day" value=""></label>
+        <label hidden id="month" value=""></label>
+        <label hidden id="year" value=""></label>
+        <div class="month">      
+            <ul>
+                <li class="prev" id="prev" onmouseover="" style="cursor: pointer;" onclick=invokedateFunction(0);>&#10094;</li>
+                <li class="next" id="next" onmouseover="" style="cursor: pointer;" onclick=invokedateFunction(1);>&#10095;</li>
+                <li id="monthName">
+                    August
+                </li>
+                <li>
+                    <span style="font-size:18px">2017</span>
+                </li>
+            </ul>
+        </div>
+
+        <ul class="weekdays">
+            <li id="d1">Mo</li>
+            <li id="d2">Tu</li>
+            <li id="d3">We</li>
+            <li id="d4">Th</li>
+            <li id="d5">Fr</li>
+            <li id="d6">Sa</li>
+            <li id="d7">Su</li>
+        </ul>
+
+        <ul class="days">  
+            <li id="1" onmouseover="" style="cursor: pointer;" onclick="myFunction(1)">1
+            </li>
+            <li id="2" onmouseover="" style="cursor: pointer;" onclick="myFunction(2)">2</li>
+            <li id="3">3</li>
+            <li id="4">4</li>
+            <li id="5">5</li>
+            <li id="6">6</li>
+            <li id="7">7</li>
+            <li id="8">8</li>
+            <li id="9">9</li>
+            <li id="10"><span class="active">10</span></li>
+            <li id="11">11</li>
+            <li id="12">12</li>
+            <li id="13">13</li>
+            <li id="14">14</li>
+            <li id="15">15</li>
+            <li id="16">16</li>
+            <li id="17">17</li>
+            <li id="18">18</li>
+            <li id="19">19</li>
+            <li id="20">20</li>
+            <li id="21">21</li>
+            <li id="22">22</li>
+            <li id="23">23</li>
+            <li id="24">24</li>
+            <li id="25">25</li>
+            <li id="26">26</li>
+            <li id="27">27</li>
+            <li id="28">28</li>
+            <li id="29">29</li>
+            <li id="30">30</li>
+            <li id="31">31</li>
+        </ul>
+
+        <div id="room_fileds">
+
+            <div class="content" id="wrapper"> 
+                <label>Events :</label>
+
+            </div>
+        </div>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+
+                <form method="post" action="/addname">
+                    <input type="text" id = "name" name="firstname"  >
+
+                    <input type="submit" id="modbtn" value="Submit"  onclick="myf()">
+                </form>
+
+            </div>
+
+        </div>
+
+        <script>
+
+            function getDaysInMonth(month, year) {
+                var date = new Date(year, month, 1);
+
+                var weekday = new Array(7);
+                weekday[0] = "Sunday";
+                weekday[1] = "Monday";
+                weekday[2] = "Tuesday";
+                weekday[3] = "Wednesday";
+                weekday[4] = "Thursday";
+                weekday[5] = "Friday";
+                weekday[6] = "Saturday";
+
+                var n = weekday[date.getDay()];
+                //document.getElementById("demo").innerHTML = n;
+                // Since no month has fewer than 28 days
+
+                var days = [];
+                //console.log('month', month, 'date.getMonth()', date.getMonth())
+                while (date.getMonth() === month) {
+                    var d = new Date(date);
+                    days.push(d);
+                    //console.log('day', date.getDate(), 'day name', weekday[d.getDay()] );
+
+
+                    if(date.getDate() <= 7){
+
+                        var id = date.getDate();
+
+                        if(id === 1){
+                            document.getElementById("d1").innerHTML = weekday[(d.getDay())];
+                        }else if(id === 2){
+                            document.getElementById("d2").innerHTML = weekday[(d.getDay())];
+                        }else if(id === 3){
+                            document.getElementById("d3").innerHTML = weekday[(d.getDay())];
+                        }else if(id === 4){
+                            document.getElementById("d4").innerHTML = weekday[(d.getDay())];
+                        }else if(id === 5){
+                            document.getElementById("d5").innerHTML = weekday[(d.getDay())];
+                        }else if(id === 6){
+                            document.getElementById("d6").innerHTML = weekday[(d.getDay())];
+                        }else if(id === 7){
+                            document.getElementById("d7").innerHTML = weekday[(d.getDay())];
+                        }
+
+                        if(month === 1){
+                            document.getElementById("29").innerHTML = "";
+                            document.getElementById("30").innerHTML = "";
+                            document.getElementById("31").innerHTML = "";
+                        }else if(month === 3){
+                            document.getElementById("31").innerHTML = "";
+                        }else if(month === 5){
+                            document.getElementById("31").innerHTML = "";
+                        }else if(month === 8){
+                            document.getElementById("31").innerHTML = "";
+                        }else if(month === 10){
+                            document.getElementById("31").innerHTML = "";
+                        }
+
+
+                    }
+                    date.setDate(date.getDate() + 1);
+                }
+
+
+
+                return days;
+            }
+            var dateObj = new Date();
+            //var month = dateObj.getUTCMonth() + 1; //months from 1-12
+            var month = dateObj.getUTCMonth();
+            var day = dateObj.getUTCDate();
+            var year = dateObj.getUTCFullYear();
+
+            console.log(month ,"-",day,"-", year)
+
+            document.getElementById("month").value = month;
+            document.getElementById("year").value = year;
+
+            var mVal = document.getElementById("month").value;
+
+            if(mVal == 0){document.getElementById("monthName").innerHTML = "January";}
+            else if(mVal == 1){document.getElementById("monthName").innerHTML = "February";}
+            else if(mVal == 2){document.getElementById("monthName").innerHTML = "March";}
+            else if(mVal == 3){document.getElementById("monthName").innerHTML = "April";}
+            else if(mVal == 4){document.getElementById("monthName").innerHTML = "May";}
+            else if(mVal == 5){document.getElementById("monthName").innerHTML = "June";}
+            else if(mVal == 6){document.getElementById("monthName").innerHTML = "July";}
+            else if(mVal == 7){document.getElementById("monthName").innerHTML = "August";}
+            else if(mVal == 8){document.getElementById("monthName").innerHTML = "September";}
+            else if(mVal == 9){document.getElementById("monthName").innerHTML = "October";}
+            else if(mVal == 10){document.getElementById("monthName").innerHTML = "November";}
+            else if(mVal == 11){document.getElementById("monthName").innerHTML = "December";}
+
+
+            window.onload = getDaysInMonth(month, year);
+        </script>
+
+        <script>
+            function invokedateFunction(stat) {
+                var dateObj = new Date();
+                //var month = dateObj.getUTCMonth() + 1; //months from 1-12
+                var month = dateObj.getUTCMonth();
+                var day = dateObj.getUTCDate();
+                var year = dateObj.getUTCFullYear();
+
+                console.log(month ,"-",day,"-", year)
+
+                var mVal = document.getElementById("month").value;
+                //var yVal = document.getElementById("year").value;
+                // value = isNaN(value) ? 0 : value;
+
+                if(stat == 0){
+                    mVal--;
+                }else{
+                    mVal++;
+                }
+
+
+                document.getElementById("month").value = mVal;
+                //document.getElementById("year").value = year;
+                console.log(mVal);
+
+                if(mVal == 0){document.getElementById("monthName").innerHTML = "January";}
+                else if(mVal == 1){document.getElementById("monthName").innerHTML = "February";}
+                else if(mVal == 2){document.getElementById("monthName").innerHTML = "March";}
+                else if(mVal == 3){document.getElementById("monthName").innerHTML = "April";}
+                else if(mVal == 4){document.getElementById("monthName").innerHTML = "May";}
+                else if(mVal == 5){document.getElementById("monthName").innerHTML = "June";}
+                else if(mVal == 6){document.getElementById("monthName").innerHTML = "July";}
+                else if(mVal == 7){document.getElementById("monthName").innerHTML = "August";}
+                else if(mVal == 8){document.getElementById("monthName").innerHTML = "September";}
+                else if(mVal == 9){document.getElementById("monthName").innerHTML = "October";}
+                else if(mVal == 10){document.getElementById("monthName").innerHTML = "November";}
+                else if(mVal == 11){document.getElementById("monthName").innerHTML = "December";}
+
+                getDaysInMonth(mVal, year);
+
+
+            }
+
+            function myFunction(val) {
+
+                modal.style.display = "block";
+                document.getElementById("day").value = val
+            }
+
+            function myf( ) {
+                var day = document.getElementById("day").value;
+                var v = document.getElementById("name");
+                console.log(v.value);
+
+                var txt = "Day " +day+ " : " + v.value ;
+
+                var br = document.createElement("br");
+                var node = document.createElement("LABEL");
+                var textnode = document.createTextNode(txt);
+
+                node.appendChild(br);
+                node.appendChild(textnode);
+
+                document.getElementById("wrapper").appendChild(node);
+                document.getElementById("name").value = "";
+                modal.style.display = "none";
+            }
+
+        </script>
+
+        <script>
+            // Get the modal
+            var modal = document.getElementById('myModal');
+
+            var mbtn = document.getElementById("modbtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+    </body>
+</html>
